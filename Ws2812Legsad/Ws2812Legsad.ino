@@ -17,8 +17,9 @@ int inMenu = 1;
 MillisTimer tim1(1000);  // Timer odmierzający 1 sekundę
 MillisTimer tim2(1000);
 
-volatile unsigned long lastInterruptTime = 0;
-const unsigned long debounceDelay = 50;  // Debounce dla przycisków
+volatile unsigned long lastInterruptTimeUp = 0;
+volatile unsigned long lastInterruptTimeDown = 0;
+const unsigned long debounceDelay = 100;  // 100 ms debounce
 
 void resetCounter() {
   counter = timeSet;  // Reset licznika do timeSet
@@ -35,9 +36,9 @@ void OnBtnClick() {
 
 void myISRup() {
   unsigned long currentTime = millis();
-  if (currentTime - lastInterruptTime > debounceDelay) {
-    lastInterruptTime = currentTime;
-    if(timeSet < 20){
+  if (currentTime - lastInterruptTimeUp > debounceDelay) {
+    lastInterruptTimeUp = currentTime;
+    if (timeSet < 20) {
       timeSet++;
       OnBtnClick();
     }
@@ -46,8 +47,8 @@ void myISRup() {
 
 void myISRdown() {
   unsigned long currentTime = millis();
-  if (currentTime - lastInterruptTime > debounceDelay) {
-    lastInterruptTime = currentTime;
+  if (currentTime - lastInterruptTimeDown > debounceDelay) {
+    lastInterruptTimeDown = currentTime;
     if (timeSet > 3) {
       timeSet--;
       OnBtnClick();
